@@ -1,0 +1,15 @@
+﻿@model Guid?
+@{
+    ViewData["Title"] = "HealthCheck";
+}
+
+<h1>HealthCheck</h1>
+
+@if (Model.HasValue)
+{
+    <p>HealthCheck OK</p>
+}
+else
+{
+    <p>HealthCheck failed</p>
+}

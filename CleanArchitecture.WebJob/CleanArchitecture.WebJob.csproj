@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk;Microsoft.NET.Sdk.Publish">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Host.Storage" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CleanArchitecture.Application\CleanArchitecture.Application.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Domain\CleanArchitecture.Domain.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Persistence\CleanArchitecture.Persistence.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Services\CleanArchitecture.Services.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Storage\CleanArchitecture.Storage.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Settings.job">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "restored": true,
+      "restoreTime": "2023-11-13T21:44:07.1026218Z"
+    },
+    "appInsights1": {
+      "restored": true,
+      "restoreTime": "2023-11-13T21:44:15.9052488Z"
+    }
+  },
+  "parameters": {
+    "appInsights1.resourceGroupName": {
+      "Name": "appInsights1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "rg-webappsecurity-test"
+    },
+    "appInsights1.subscriptionId": {
+      "Name": "appInsights1.subscriptionId",
+      "Type": "subscription",
+      "Value": "273d16dc-db6b-47a3-aefa-28b8f814e5f8"
+    }
+  }
+}

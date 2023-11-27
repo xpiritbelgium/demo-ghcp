@@ -1,0 +1,1 @@
+dotnet CleanArchitecture.WebJob.dll %*

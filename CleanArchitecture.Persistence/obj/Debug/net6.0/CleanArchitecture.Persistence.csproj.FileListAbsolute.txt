@@ -1,0 +1,17 @@
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\bin\Debug\net6.0\CleanArchitecture.Persistence.deps.json
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\bin\Debug\net6.0\CleanArchitecture.Persistence.dll
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\bin\Debug\net6.0\CleanArchitecture.Persistence.pdb
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\bin\Debug\net6.0\CleanArchitecture.Application.dll
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\bin\Debug\net6.0\CleanArchitecture.Domain.dll
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\bin\Debug\net6.0\CleanArchitecture.Application.pdb
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\bin\Debug\net6.0\CleanArchitecture.Domain.pdb
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\CleanArchitecture.Persistence.csproj.AssemblyReference.cache
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\CleanArchitecture.Persistence.GeneratedMSBuildEditorConfig.editorconfig
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\CleanArchitecture.Persistence.AssemblyInfoInputs.cache
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\CleanArchitecture.Persistence.AssemblyInfo.cs
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\CleanArchitecture.Persistence.csproj.CoreCompileInputs.cache
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\CleanArchitecture.Persistence.csproj.CopyComplete
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\CleanArchitecture.Persistence.dll
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\refint\CleanArchitecture.Persistence.dll
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\CleanArchitecture.Persistence.pdb
+C:\code\Nigeria\Sample\CleanArchitecture\CleanArchitecture.Persistence\obj\Debug\net6.0\ref\CleanArchitecture.Persistence.dll

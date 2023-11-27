@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationInsightsResourceId>/subscriptions/273d16dc-db6b-47a3-aefa-28b8f814e5f8/resourceGroups/rg-webappsecurity-test/providers/microsoft.insights/components/wa-sqltest-kl</ApplicationInsightsResourceId>
+    <UserSecretsId>a8b27eff-0ac5-410a-80fc-059c971b419e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.10.4" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.19.0" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.23" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.23" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.12">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Azure" Version="1.7.1" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.15.1" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.15.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanArchitecture.Application\CleanArchitecture.Application.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Domain\CleanArchitecture.Domain.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Persistence\CleanArchitecture.Persistence.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Services\CleanArchitecture.Services.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Storage\CleanArchitecture.Storage.csproj" />
+  </ItemGroup>
+
+</Project>

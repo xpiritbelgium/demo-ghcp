@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>f31a64aa-07ab-4324-92d8-58216d8058cd</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/273d16dc-db6b-47a3-aefa-28b8f814e5f8/resourceGroups/rg-webappsecurity-test/providers/microsoft.insights/components/wa-sqltest-kl</ApplicationInsightsResourceId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanArchitecture.Application\CleanArchitecture.Application.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Domain\CleanArchitecture.Domain.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Persistence\CleanArchitecture.Persistence.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Services\CleanArchitecture.Services.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Storage\CleanArchitecture.Storage.csproj" />
+  </ItemGroup>
+
+</Project>

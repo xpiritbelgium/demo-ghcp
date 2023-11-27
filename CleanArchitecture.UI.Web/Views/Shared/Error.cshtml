@@ -1,0 +1,34 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Error!</h1>
+<h2 class="text-danger">@Model.ExceptionMessage</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<p>
+    <strong>Errors:</strong>
+    @if (Model.Errors.Any())
+    {
+        <ul>
+            @foreach (var error in Model.Errors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    }
+</p>
+
+<p>
+    <strong>StackTrace:</strong><br />
+    <code>
+        @Model.Stacktrace
+    </code>
+</p>
