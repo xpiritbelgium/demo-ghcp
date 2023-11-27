@@ -1,7 +1,0 @@
-{
-  "CleanArchitecture.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\code\\Nigeria\\Sample\\CleanArchitecture\\CleanArchitecture.Application",
-  "CleanArchitecture.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\code\\Nigeria\\Sample\\CleanArchitecture\\CleanArchitecture.Domain",
-  "CleanArchitecture.Persistence, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\code\\Nigeria\\Sample\\CleanArchitecture\\CleanArchitecture.Persistence",
-  "CleanArchitecture.Storage, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\code\\Nigeria\\Sample\\CleanArchitecture\\CleanArchitecture.Storage",
-  "CleanArchitecture.UI.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\code\\Nigeria\\Sample\\CleanArchitecture\\CleanArchitecture.UI.Web"
-}
