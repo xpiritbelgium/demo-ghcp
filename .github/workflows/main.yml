@@ -8,7 +8,13 @@ jobs:
   DeployDev:
     name: Build and Deploy to DEV
     runs-on: ubuntu-latest
+    environment: DEV
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: Azure/login@v1.5.1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
   
