@@ -1,0 +1,14 @@
+name: Deploy App
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  DeployDev:
+    name: Build and Deploy to DEV
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+  
