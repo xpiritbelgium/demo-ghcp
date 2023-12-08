@@ -21,7 +21,6 @@ jobs:
       - name: Deploy Resource Group
         uses: Azure/arm-deploy@v1.0.9
         with:
-          resourceGroupName: ${{ env.ResourceGroupName }}
           template: ./iac/resourcegroup.bicep
           parameters: resourceGroupName=rg_cleanarchitecture_dev location=westeurope
   
