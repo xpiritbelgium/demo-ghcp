@@ -23,8 +23,11 @@ jobs:
         with:
           scope: subscription
           region: westeurope
-          subscriptionId: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'
-          #resourceGroupName: rg-deployments
+          subscriptionId: '${{ secrets.AZURE_CREDENTIALS.subscriptionId }}'
           template: ./iac/resourcegroup.bicep
           parameters: 'resourceGroupName=rg_cleanarchitecture_dev location=westeurope'
+
+      - name: Deploy Azure Resources
+
+      - name: build, deploy, 
   
