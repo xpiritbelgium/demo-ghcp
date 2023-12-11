@@ -20,6 +20,20 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|6.0'
+      alwaysOn: true
     }
   }
+  identity: {
+    type: 'SystemAssigned'
+  }
 }
+
+resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
+  name: 'st-cbn-dev'
+  location: location
+  kind: 'StorageV2'
+  sku: {
+    name: 'Standard_ZRS'
+  }
+}
+
