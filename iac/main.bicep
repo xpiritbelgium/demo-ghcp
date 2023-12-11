@@ -19,7 +19,7 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
-      netFrameworkVersion: 'v6.0'
+      linuxFxVersion: 'DOTNETCORE|6.0'
     }
   }
 }
