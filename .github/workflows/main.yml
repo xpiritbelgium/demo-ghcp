@@ -37,7 +37,7 @@ jobs:
         uses: Azure/arm-deploy@v1
         with:
           resourceGroupName: rg_cleanarchitecture_dev
-          template: ./iac/azure.bicep
+          template: ./iac/main.bicep
           parameters: 'sku=S1 location=westeurope'
 
       # - name: build, deploy, 
