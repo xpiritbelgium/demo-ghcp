@@ -2,7 +2,7 @@ param location string = resourceGroup().location
 param sku string = 'S1'
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
-  name: 'asp_cbn_dev'
+  name: 'asp-cbn-dev'
   location: location
   properties: {
     reserved: true
@@ -14,7 +14,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
 }
 
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
-  name: 'app_cbn_dev'
+  name: 'app-cbn-dev'
   location: location
   properties: {
     serverFarmId: appServicePlan.id
