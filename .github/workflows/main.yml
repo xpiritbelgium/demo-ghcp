@@ -27,7 +27,7 @@ jobs:
           template: ./iac/resourcegroup.bicep
           parameters: 'resourceGroupName=rg_cleanarchitecture_dev location=westeurope'
 
-      - name: Deploy Azure Resources
+      # - name: Deploy Azure Resources
 
-      - name: build, deploy, 
+      # - name: build, deploy, 
   
