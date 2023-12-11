@@ -21,8 +21,9 @@ jobs:
       - name: Deploy Resource Group
         uses: Azure/arm-deploy@v1.0.9
         with:
+          scope: subscription
           subscriptionId: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'
-          resourceGroupName: rg-deployments
+          #resourceGroupName: rg-deployments
           template: ./iac/resourcegroup.bicep
           parameters: 'resourceGroupName=rg_cleanarchitecture_dev location=westeurope'
   
