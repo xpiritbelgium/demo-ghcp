@@ -40,5 +40,11 @@ jobs:
           template: ./iac/main.bicep
           parameters: 'sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }}'
 
+      - name: Add roles to sql db
+        uses: azure/sql-action@v2
+        with:
+          connection-string: '${{ secrets.AZURE_SQL_CONNECTIONSTRING }}'
+          path: ./iac/roles.sql
+
       # - name: build, deploy, 
   
