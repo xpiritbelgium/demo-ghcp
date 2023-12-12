@@ -44,7 +44,7 @@ jobs:
         uses: azure/sql-action@v2
         with:
           connection-string: '${{ secrets.AZURE_SQL_CONNECTIONSTRING }}'
-          path: ./iac/roles.sql
+          path: ./sql/roles.sql
 
       # - name: build, deploy, 
   
