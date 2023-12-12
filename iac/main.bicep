@@ -1,5 +1,7 @@
 param location string = resourceGroup().location
 param sku string = 'S1'
+@secure()
+param sqlpassword string
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: 'asp-cbn-dev'
@@ -57,9 +59,17 @@ resource roleAssignment_storageblobdatacontributor 'Microsoft.Authorization/role
   }
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2014-04-01' ={
+resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' ={
   name: 'sql-cbn-dev'
   location: location
+  properties: {
+    administratorLogin: 'sqladmin'
+    administratorLoginPassword: sqlpassword
+    version: '12.0'
+    minimalTlsVersion: '1.2'
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: 'Disabled'
+  }
 }
 
 resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {

@@ -38,7 +38,7 @@ jobs:
         with:
           resourceGroupName: rg_cleanarchitecture_dev
           template: ./iac/main.bicep
-          parameters: 'sku=S1 location=westeurope'
+          parameters: 'sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }}'
 
       # - name: build, deploy, 
   
