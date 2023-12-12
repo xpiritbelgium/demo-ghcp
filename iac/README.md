@@ -26,6 +26,9 @@ SP_OBJECTID=$(az ad app show --id $SP_APPID --query id --output tsv)
 az ad app federated-credential create --id $SP_OBJECTID --parameters "{\"name\":\"GH$GH_ENVIRONMENT\",\"issuer\":\"
 https://token.actions.githubusercontent.com\",\"subject\":\"repo:$GH_ORGANIZATION/$GH_REPOSITORY:environment:$GH_ENVIRONMENT\",\"description\":\"credential
 for $GH_ENVIRONMENT deployment\",\"audiences\":[\"api://AzureADTokenExchange\"]}"
+
+#create role assignment for role based access control admin
+az role assignment create --role "Role Based Access Control Administrator" --scope /subscriptions/$SP_SUBSCRIPTIONID --assignee-object-id $SP_OBJECTID --assignee-principal-type ServicePrincipal --description "Role assignment to allow GH Actions to do role assignments of service principals"
  
 #print the values needed to add as secrets into github
 printf "AZURE_CLIENT_ID: $SP_APPID\nAZURE_TENANT_ID: $SP_TENANTID\nAZURE_SUBSCRIPTION_ID: $SP_SUBSCRIPTIONID\n"
