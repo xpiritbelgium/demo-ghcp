@@ -56,3 +56,30 @@ resource roleAssignment_storageblobdatacontributor 'Microsoft.Authorization/role
     principalType: 'ServicePrincipal'
   }
 }
+
+resource sqlServer 'Microsoft.Sql/servers@2014-04-01' ={
+  name: 'sql-cbn-dev'
+  location: location
+}
+
+resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
+  parent: sqlServer
+  name: 'sqldb-cbn-dev'
+  location: location
+  sku: {
+    name: 'GP_S_Gen5'
+    tier: 'GeneralPurpose'
+    family: 'Gen5'
+    capacity: 1
+  }
+  properties: {
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    maxSizeBytes: 34359738368
+    catalogCollation: 'SQL_Latin1_General_CP1_CI_AS'
+    zoneRedundant: true
+    readScale: 'Disabled'
+    autoPauseDelay: 60
+    requestedBackupStorageRedundancy: 'Geo'
+    isLedgerOn: false
+  }
+}
