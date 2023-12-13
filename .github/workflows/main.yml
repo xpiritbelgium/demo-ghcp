@@ -45,7 +45,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: '##placeholder_identity##'
-          replace: ${{ steps.deploy_azure_services.outputs.webAppIdentity }}
+          replace: ${{ secrets.AZURE_SQLADMINGROUP_NAME }}
           path: ./sql/roles.sql
 
       - name: Add roles to sql db
