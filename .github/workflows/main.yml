@@ -8,6 +8,9 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  communciationservicemailsenderroleid: cc2229fb-91df-4f18-b324-330a2851832a
+
 jobs:
   DeployDev:
     name: Build and Deploy to DEV
@@ -37,9 +40,10 @@ jobs:
         id: deploy_azure_services
         uses: Azure/arm-deploy@v1
         with:
+          scope: resourceGroup
           resourceGroupName: rg_cleanarchitecture_dev
           template: ./iac/main.bicep
-          parameters: 'sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }} sqladminid=${{ secrets.AZURE_SQLADMINGROUP_ID }} sqladminname="${{ secrets.AZURE_SQLADMINGROUP_NAME }}"'
+          parameters: 'sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }} sqladminid=${{ secrets.AZURE_SQLADMINGROUP_ID }} sqladminname="${{ secrets.AZURE_SQLADMINGROUP_NAME }}" communciationservicemailsenderroleid=${{ env.communciationservicemailsenderroleid }}'
 
       - name: Set Placeholders
         uses: jacobtomlinson/gha-find-replace@v3

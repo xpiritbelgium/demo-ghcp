@@ -36,6 +36,9 @@ SP_SQLADMINGROUP_ID=$(az ad group create --display-name "$SP_SQLADMINGROUP_NAME"
 
 #add service principal to the sql admins group
 az ad group member add --group "cbn sql admins" --member-id $SP_OBJECTID
+
+#create custom role communcation service mail sender
+az role definition create --role-definition "{\"Name\": \"Communication Service Mail Sender CBN\", \"IsCustom\": true, \"Description\": \"Minimal set of permissions required to send mail with Azure Communication Service.\", \"Actions\":[\"Microsoft.Communication/CommunicationServices/Read\",\"Microsoft.Communication/CommunicationServices/Write\",\"Microsoft.Communication/EmailServices/read\"],\"NotActions\": [], \"AssignableScopes\": [\"/subscriptions/$SP_SUBSCRIPTIONID\"]}"
  
 #print the values needed to add as secrets into github
 printf "AZURE_CLIENT_ID: $SP_APPID\nAZURE_TENANT_ID: $SP_TENANTID\nAZURE_SUBSCRIPTION_ID: $SP_SUBSCRIPTIONID\nSP_SQLADMINGROUP_NAME: $SP_SQLADMINGROUP_NAME\nSP_SQLADMINGROUP_ID: $SP_SQLADMINGROUP_ID\n"

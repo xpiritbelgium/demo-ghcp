@@ -4,6 +4,7 @@ param sku string = 'S1'
 param sqlpassword string
 param sqladminid string
 param sqladminname string
+param communciationservicemailsenderroleid string
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: 'asp-cbn-dev'
@@ -147,5 +148,15 @@ resource communicationService 'Microsoft.Communication/communicationServices@202
     linkedDomains: [
       emailServiceAzureDomain.id
     ]
+  }
+}
+
+resource roleAssignment_communicationservicemailsender 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+  scope: communicationService
+  name: guid(storageaccount.id, 'cc2229fb-91df-4f18-b324-330a2851832a', 'dev')
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cc2229fb-91df-4f18-b324-330a2851832a')
+    principalId: webApp.identity.principalId
+    principalType: 'ServicePrincipal'
   }
 }
