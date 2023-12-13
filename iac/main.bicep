@@ -114,7 +114,7 @@ resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' 
 
 resource emailService 'Microsoft.Communication/emailServices@2023-06-01-preview' = {
   name: 'email-cbn-dev'
-  location: location
+  location: 'global'
   properties: {
     dataLocation: 'Europe'
   }
@@ -123,7 +123,7 @@ resource emailService 'Microsoft.Communication/emailServices@2023-06-01-preview'
 resource emailServiceAzureDomain 'Microsoft.Communication/emailServices/domains@2023-03-31' = {
   parent: emailService
   name: 'AzureManagedDomain'
-  location: location
+  location: 'global'
   properties: {
     domainManagement: 'AzureManaged'
     userEngagementTracking: 'Disabled'
@@ -141,7 +141,7 @@ resource senderUserNameAzureDomain 'Microsoft.Communication/emailServices/domain
 
 resource communicationService 'Microsoft.Communication/communicationServices@2023-06-01-preview' = {
   name: 'acs-cbn-dev'
-  location: location
+  location: 'global'
   properties: {
     dataLocation: 'Europe'
     linkedDomains: [
