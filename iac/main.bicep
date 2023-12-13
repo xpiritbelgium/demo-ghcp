@@ -140,6 +140,8 @@ resource senderUserNameAzureDomain 'Microsoft.Communication/emailServices/domain
   }
 }
 
+output sendermail string = '${senderUserNameAzureDomain.name}@${emailServiceAzureDomain.name}'
+
 resource communicationService 'Microsoft.Communication/communicationServices@2023-06-01-preview' = {
   name: 'acs-cbn-dev'
   location: 'global'
