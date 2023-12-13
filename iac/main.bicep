@@ -6,6 +6,15 @@ param sqladminid string
 param sqladminname string
 param communciationservicemailsenderroleid string
 
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: 'appi-cbn-dev'
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'    
+  }
+}
+
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: 'asp-cbn-dev'
   location: location
@@ -26,6 +35,12 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|6.0'
       alwaysOn: true
+      appSettings: [
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: appInsights.properties.ConnectionString
+        }
+      ]
     }
   }
   identity: {
@@ -80,7 +95,7 @@ resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' ={
   }
 }
 
-resource symbolicname 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
+resource sqlServerAdministrator 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
   name: 'ActiveDirectory'
   parent: sqlServer
   properties: {
@@ -140,7 +155,7 @@ resource senderUserNameAzureDomain 'Microsoft.Communication/emailServices/domain
   }
 }
 
-output sendermail string = '${senderUserNameAzureDomain.name}@${emailServiceAzureDomain.name}'
+output sendermail string = '${senderUserNameAzureDomain.properties.username}@${emailServiceAzureDomain.properties.fromSenderDomain}'
 
 resource communicationService 'Microsoft.Communication/communicationServices@2023-06-01-preview' = {
   name: 'acs-cbn-dev'
