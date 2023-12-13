@@ -30,6 +30,8 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   }
 }
 
+output webAppIdentity string = webApp.identity.principalId
+
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: 'stcbndev'
   location: location

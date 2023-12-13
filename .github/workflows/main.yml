@@ -34,11 +34,19 @@ jobs:
           parameters: 'resourceGroupName=rg_cleanarchitecture_dev location=westeurope'
 
       - name: Deploy Azure Services
+        id: deploy_azure_services
         uses: Azure/arm-deploy@v1
         with:
           resourceGroupName: rg_cleanarchitecture_dev
           template: ./iac/main.bicep
           parameters: 'sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }}'
+
+      - name: Set Placeholders
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: '##placeholder_identity##'
+          replace: steps.deploy_azure_services.outputs.webAppIdentity
+          path: ./sql/roles.sql
 
       - name: Add roles to sql db
         uses: azure/sql-action@v2
