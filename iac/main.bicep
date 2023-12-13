@@ -111,3 +111,41 @@ resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' 
     isLedgerOn: false
   }
 }
+
+resource emailService 'Microsoft.Communication/emailServices@2023-06-01-preview' = {
+  name: 'email-cbn-dev'
+  location: location
+  properties: {
+    dataLocation: 'Europe'
+  }
+}
+
+resource emailServiceAzureDomain 'Microsoft.Communication/emailServices/domains@2023-03-31' = {
+  parent: emailService
+  name: 'AzureManagedDomain'
+  location: location
+  properties: {
+    domainManagement: 'AzureManaged'
+    userEngagementTracking: 'Disabled'
+  }
+}
+
+resource senderUserNameAzureDomain 'Microsoft.Communication/emailServices/domains/senderUsernames@2023-03-31' = {
+  parent: emailServiceAzureDomain
+  name: 'donotreply'
+  properties: {
+    username: 'DoNotReply'
+    displayName: 'DoNotReply'
+  }
+}
+
+resource communicationService 'Microsoft.Communication/communicationServices@2023-06-01-preview' = {
+  name: 'acs-cbn-dev'
+  location: location
+  properties: {
+    dataLocation: 'Europe'
+    linkedDomains: [
+      emailServiceAzureDomain.id
+    ]
+  }
+}
