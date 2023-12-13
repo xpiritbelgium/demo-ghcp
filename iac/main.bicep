@@ -2,6 +2,8 @@ param location string = resourceGroup().location
 param sku string = 'S1'
 @secure()
 param sqlpassword string
+param sqladminid string
+param sqladminname string
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: 'asp-cbn-dev'
@@ -71,6 +73,17 @@ resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' ={
     minimalTlsVersion: '1.2'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: 'Disabled'
+  }
+}
+
+resource symbolicname 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
+  name: 'ActiveDirectory'
+  parent: sqlServer
+  properties: {
+    administratorType: 'ActiveDirectory'
+    login: sqladminname
+    sid: sqladminid
+    tenantId: tenant().tenantId
   }
 }
 

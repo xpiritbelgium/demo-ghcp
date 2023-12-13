@@ -29,9 +29,16 @@ for $GH_ENVIRONMENT deployment\",\"audiences\":[\"api://AzureADTokenExchange\"]}
 
 #create role assignment for role based access control admin
 az role assignment create --role "Role Based Access Control Administrator" --scope /subscriptions/$SP_SUBSCRIPTIONID --assignee-object-id $SP_OBJECTID --assignee-principal-type ServicePrincipal --description "Role assignment to allow GH Actions to do role assignments of service principals"
+
+#create AD group to set sql admins
+SP_SQLADMINGROUP_NAME="cbn sql admins"
+SP_SQLADMINGROUP_ID=$(az ad group create --display-name "$SP_SQLADMINGROUP_NAME" --mail-nickname "SP_SQLADMINGROUP_NAME" --description "Used to set sql admins" --query id --output tsv)
+
+#add service principal to the sql admins group
+az ad group member add --group "cbn sql admins" --member-id $SP_OBJECTID
  
 #print the values needed to add as secrets into github
-printf "AZURE_CLIENT_ID: $SP_APPID\nAZURE_TENANT_ID: $SP_TENANTID\nAZURE_SUBSCRIPTION_ID: $SP_SUBSCRIPTIONID\n"
+printf "AZURE_CLIENT_ID: $SP_APPID\nAZURE_TENANT_ID: $SP_TENANTID\nAZURE_SUBSCRIPTION_ID: $SP_SUBSCRIPTIONID\nSP_SQLADMINGROUP_NAME: $SP_SQLADMINGROUP_NAME\nSP_SQLADMINGROUP_ID: $SP_SQLADMINGROUP_ID\n"
 ```
 
 ## Creating the AZURE_CREDENTIALS secret in Github
