@@ -153,9 +153,9 @@ resource communicationService 'Microsoft.Communication/communicationServices@202
 
 resource roleAssignment_communicationservicemailsender 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
   scope: communicationService
-  name: guid(storageaccount.id, 'cc2229fb-91df-4f18-b324-330a2851832a', 'dev')
+  name: guid(storageaccount.id, communciationservicemailsenderroleid, 'dev')
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cc2229fb-91df-4f18-b324-330a2851832a')
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', communciationservicemailsenderroleid)
     principalId: webApp.identity.principalId
     principalType: 'ServicePrincipal'
   }
