@@ -1,10 +1,13 @@
-﻿using CleanArchitecture.UI.Web;
+﻿using CleanArchitecture.Persistence;
+using CleanArchitecture.UI.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Headers;
+using Testcontainers.MsSql;
 using Xunit;
 
 namespace CleanArchitecture.IntegrationTests
@@ -29,11 +32,16 @@ namespace CleanArchitecture.IntegrationTests
                     services.AddAuthentication("Scheme")
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
                             "Scheme", options => { });
+                    services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(CleanArchitectureDbContext)));
+                    services.AddDbContext<CleanArchitectureDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()));
                 });
             }).CreateClient(new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = false,
             });
+
+            _factory.Services.CreateScope().ServiceProvider.GetRequiredService<CleanArchitectureDbContext>().Database.Migrate();
+
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
 
@@ -53,11 +61,16 @@ namespace CleanArchitecture.IntegrationTests
                     services.AddAuthentication("Scheme")
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
                             "Scheme", options => { });
+                    services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(CleanArchitectureDbContext)));
+                    services.AddDbContext<CleanArchitectureDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()));
                 });
             }).CreateClient(new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = false,
             });
+
+            _factory.Services.CreateScope().ServiceProvider.GetRequiredService<CleanArchitectureDbContext>().Database.Migrate();
+
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
 
