@@ -82,5 +82,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: website
-          path: ./src/CleanArchitecture.UI.Web/website/**
+          path: ./src/website/**
           if-no-files-found: error
