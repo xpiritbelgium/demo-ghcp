@@ -43,11 +43,11 @@ jobs:
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    - name: Apply EF migrations
-        uses: azure/sql-action@v2
-        with:
-          connection-string: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
-          sql-file: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Scripts/EFMigrations.sql
+    - name: EF migration
+      uses: azure/sql-action@v2
+      with:
+        connection-string: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Scripts/EFMigrations.sql
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
