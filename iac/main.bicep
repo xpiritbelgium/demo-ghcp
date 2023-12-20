@@ -143,6 +143,8 @@ resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' 
   }
 }
 
+output sqlConnectionString string = listKeys(sqlServerDatabase.id, '2023-02-01-preview').connectionStrings[0].value
+
 resource emailService 'Microsoft.Communication/emailServices@2023-06-01-preview' = {
   name: 'email-cbn-dev'
   location: 'global'
