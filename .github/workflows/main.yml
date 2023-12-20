@@ -38,14 +38,7 @@ jobs:
       - name: Publish
         run: dotnet publish CleanArchitecture.UI.Web/CleanArchitecture.UI.Web.csproj -c Release -o website
         working-directory: ./src
-        
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: website
-          path: ./src/website/**
-          if-no-files-found: error
-  
+
   DeployDev:
     name: Deploy to DEV
     runs-on: ubuntu-latest
@@ -92,7 +85,8 @@ jobs:
       #     connection-string: '${{ steps.deploy_azure_services.outputs.sqlConnectionString }}'
       #     path: ./sql/roles.sql     
       
-      - name: Download a Build Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: website
+      - name: 'Run Azure webapp deploy action using publish profile credentials'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: 'app-cbn-dev' # Replace with your app name
+          package: .src/website
