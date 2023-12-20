@@ -10,13 +10,9 @@ namespace CleanArchitecture.Persistence
     {
         private readonly IApplicationUserAccessor _applicationUserAccessor;
 
-        public CleanArchitectureDbContext(DbContextOptions<CleanArchitectureDbContext> options, IApplicationUserAccessor applicationUserAccessor) 
+        public CleanArchitectureDbContext(DbContextOptions<CleanArchitectureDbContext> options, IApplicationUserAccessor applicationUserAccessor)
             : base(options)
         {
-            // causes a startup delay;
-            // possible solution is to create a background worker to run migrations
-            // or from the build pipeline (prefered way)
-            Database.Migrate();
             _applicationUserAccessor = applicationUserAccessor;
         }
 

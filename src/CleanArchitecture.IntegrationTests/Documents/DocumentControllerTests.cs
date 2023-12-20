@@ -44,6 +44,7 @@ namespace CleanArchitecture.IntegrationTests.Documents
                     services.AddAuthentication("Scheme")
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
                             "Scheme", options => { });
+                    services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(CleanArchitectureDbContext)));
                     services.AddDbContext<CleanArchitectureDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()));
                 });
             }).CreateClient(new WebApplicationFactoryClientOptions
@@ -69,6 +70,7 @@ namespace CleanArchitecture.IntegrationTests.Documents
                     services.AddAuthentication("Scheme")
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
                             "Scheme", options => { });
+                    services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(CleanArchitectureDbContext)));
                     services.AddDbContext<CleanArchitectureDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()));
                     services.AddAzureClients(cfg =>
                     {

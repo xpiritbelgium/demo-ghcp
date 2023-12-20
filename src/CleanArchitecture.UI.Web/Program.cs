@@ -10,6 +10,8 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 using System.IdentityModel.Tokens.Jwt;
 using CleanArchitecture.Application.Extensions;
+using CleanArchitecture.UI.Web.BackgroundTask;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.UI.Web
 {
@@ -57,8 +59,11 @@ namespace CleanArchitecture.UI.Web
             builder.Services.AddRazorPages()
                 .AddMicrosoftIdentityUI();
 
+            builder.Services.AddHostedService<PublishDocumentsBackgroundTask>();
+
             var app = builder.Build();
 
+            app.Services.CreateScope().ServiceProvider.GetRequiredService<CleanArchitectureDbContext>().Database.Migrate();
 
             app.UseExceptionHandler("/Home/Error");
 
