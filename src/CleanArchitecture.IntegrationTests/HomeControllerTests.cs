@@ -1,22 +1,15 @@
-﻿using CleanArchitecture.Persistence;
-using CleanArchitecture.UI.Web;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using CleanArchitecture.UI.Web;
 using System.Net;
 using System.Net.Http.Headers;
-using Testcontainers.MsSql;
 using Xunit;
 
 namespace CleanArchitecture.IntegrationTests
 {
-    public class HomeControllerTests : IClassFixture<WebApplicationFactory<Program>>
+    public class HomeControllerTests : IClassFixture<TestingWebAppFactory<Program>>
     {
-        private readonly WebApplicationFactory<Program> _factory;
+		private readonly TestingWebAppFactory<Program> _factory;
 
-        public HomeControllerTests(WebApplicationFactory<Program> factory)
+		public HomeControllerTests(TestingWebAppFactory<Program> factory)
         {
             _factory = factory;
         }
@@ -24,26 +17,7 @@ namespace CleanArchitecture.IntegrationTests
         [Fact]
         public async Task HealthCheckShouldReturnSuccess()
         {
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddScoped<ITestClaimsProvider, TestClaimsProvider>(provider => new TestClaimsProvider("Admin"));
-                    services.AddAuthentication("Scheme")
-                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                            "Scheme", options => { });
-                    services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(CleanArchitectureDbContext)));
-                    services.AddDbContext<CleanArchitectureDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()));
-                });
-            }).CreateClient(new WebApplicationFactoryClientOptions
-            {
-                AllowAutoRedirect = false,
-            });
-
-            _factory.Services.CreateScope().ServiceProvider.GetRequiredService<CleanArchitectureDbContext>().Database.Migrate();
-
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
+            var client = _factory.GetClientWithClaim("Admin");
 
             var response = await client.GetAsync("/Home/HealthCheck");
 
@@ -53,24 +27,7 @@ namespace CleanArchitecture.IntegrationTests
         [Fact]
         public async Task HealthCheckShouldFailWhenCalledWithoutAdminRole()
         {
-            var client = _factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddScoped<ITestClaimsProvider, TestClaimsProvider>(provider => new TestClaimsProvider("Reader"));
-                    services.AddAuthentication("Scheme")
-                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                            "Scheme", options => { });
-                    services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(CleanArchitectureDbContext)));
-                    services.AddDbContext<CleanArchitectureDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()));
-                });
-            }).CreateClient(new WebApplicationFactoryClientOptions
-            {
-                AllowAutoRedirect = false,
-            });
-
-            _factory.Services.CreateScope().ServiceProvider.GetRequiredService<CleanArchitectureDbContext>().Database.Migrate();
-
+			var client = _factory.GetClientWithClaim("Reader");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
 
