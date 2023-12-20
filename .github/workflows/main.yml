@@ -12,13 +12,48 @@ env:
   communciationservicemailsenderroleid: cc2229fb-91df-4f18-b324-330a2851832a
 
 jobs:
-  DeployDev:
-    name: Build and Deploy to DEV
+  Build:
+    name: Build and Test
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./src
+
+      - name: Build
+        run: dotnet build --configuration Release
+        working-directory: ./src
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal --configuration Release
+        working-directory: ./src
+
+      - name: Publish
+        run: dotnet publish CleanArchitecture.UI.Web/CleanArchitecture.UI.Web.csproj -c Release -o website
+        working-directory: ./src
+        
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: website
+          path: ./src/website/**
+          if-no-files-found: error
+  
+  DeployDev:
+    name: Deploy to DEV
+    runs-on: ubuntu-latest
+    needs: Build
     environment: DEV
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Azure Login
         uses: Azure/login@v1
@@ -55,35 +90,7 @@ jobs:
       #   uses: azure/sql-action@v2
       #   with:
       #     connection-string: '${{ steps.deploy_azure_services.outputs.sqlConnectionString }}'
-      #     path: ./sql/roles.sql
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 6.0.x
-
-      - name: Restore dependencies
-        run: dotnet restore
-        working-directory: ./src
-
-      - name: Build
-        run: dotnet build --configuration Release
-        working-directory: ./src
-
-      - name: Test
-        run: dotnet test --no-build --verbosity normal --configuration Release
-        working-directory: ./src
-
-      - name: Publish
-        run: dotnet publish CleanArchitecture.UI.Web/CleanArchitecture.UI.Web.csproj -c Release -o website
-        working-directory: ./src
-        
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: website
-          path: ./src/website/**
-          if-no-files-found: error
+      #     path: ./sql/roles.sql     
       
       - name: Download a Build Artifact
         uses: actions/download-artifact@v3
