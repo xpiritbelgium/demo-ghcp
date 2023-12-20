@@ -52,6 +52,8 @@ namespace CleanArchitecture.IntegrationTests.Documents
                 AllowAutoRedirect = false,
             });
 
+            _factory.Services.CreateScope().ServiceProvider.GetRequiredService<CleanArchitectureDbContext>().Database.Migrate();
+
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
 
             var response = await client.GetAsync("/Documents/Index");
@@ -81,6 +83,8 @@ namespace CleanArchitecture.IntegrationTests.Documents
             {
                 AllowAutoRedirect = false,
             });
+
+            _factory.Services.CreateScope().ServiceProvider.GetRequiredService<CleanArchitectureDbContext>().Database.Migrate();
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
 

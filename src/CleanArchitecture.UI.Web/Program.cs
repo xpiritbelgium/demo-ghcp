@@ -63,8 +63,6 @@ namespace CleanArchitecture.UI.Web
 
             var app = builder.Build();
 
-            app.Services.CreateScope().ServiceProvider.GetRequiredService<CleanArchitectureDbContext>().Database.Migrate();
-
             app.UseExceptionHandler("/Home/Error");
 
             // Configure the HTTP request pipeline.
