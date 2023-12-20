@@ -6,12 +6,27 @@ param sqladminid string
 param sqladminname string
 param communciationservicemailsenderroleid string
 
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
+  name: 'law-cbn-dev'
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 90
+    workspaceCapping: {
+      dailyQuotaGb: 1
+    }
+  }
+}
+
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'appi-cbn-dev'
   location: location
   kind: 'web'
   properties: {
     Application_Type: 'web'    
+    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
 }
 
