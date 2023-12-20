@@ -73,5 +73,14 @@ jobs:
       - name: Test
         run: dotnet test --no-build --verbosity normal --configuration Release
         working-directory: ./src
-      
-  
+
+      - name: Publish
+        run: dotnet publish CleanArchitecture.UI.Web/CleanArchitecture.UI.Web.csproj -c Release -o website
+        working-directory: ./src
+        
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: website
+          path: ./src/CleanArchitecture.UI.Web/website/**
+          if-no-files-found: error
