@@ -71,7 +71,7 @@ jobs:
         working-directory: ./src
 
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --no-build --verbosity normal --configuration Release
         working-directory: ./src
       
   
