@@ -4,6 +4,7 @@ param sku string = 'S1'
 param sqlpassword string
 param sqladminid string
 param sqladminname string
+param sqlDomain string
 param communciationservicemailsenderroleid string
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
@@ -143,7 +144,8 @@ resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' 
   }
 }
 
-output sqlConnectionString string = listKeys(sqlServerDatabase.id, '2023-02-01-preview').connectionStrings[0].value
+output sqlConnectionString string = 'Server=tcp:${sqlServer.name}.${sqlDomain},1433;Initial Catalog=${sqlServerDatabase.name};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";'
+
 
 resource emailService 'Microsoft.Communication/emailServices@2023-06-01-preview' = {
   name: 'email-cbn-dev'
