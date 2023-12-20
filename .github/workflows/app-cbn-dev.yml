@@ -8,7 +8,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: CleanArchitecture.UI.Web/published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: CleanArchitecture.UI.Web
+  WORKING_DIRECTORY: src/CleanArchitecture.UI.Web
 jobs:
   build:
     runs-on: ubuntu-latest
