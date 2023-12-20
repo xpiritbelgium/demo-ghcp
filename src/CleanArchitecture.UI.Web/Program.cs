@@ -59,7 +59,7 @@ namespace CleanArchitecture.UI.Web
             builder.Services.AddRazorPages()
                 .AddMicrosoftIdentityUI();
 
-            builder.Services.AddHostedService<PublishDocumentsBackgroundTask>();
+            //builder.Services.AddHostedService<PublishDocumentsBackgroundTask>();
 
             var app = builder.Build();
 

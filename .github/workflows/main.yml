@@ -27,35 +27,35 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy Resource Group
-        uses: Azure/arm-deploy@v1
-        with:
-          scope: subscription
-          region: westeurope
-          subscriptionId: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'
-          template: ./iac/resourcegroup.bicep
-          parameters: 'resourceGroupName=rg_cleanarchitecture_dev location=westeurope'
+      # - name: Deploy Resource Group
+      #   uses: Azure/arm-deploy@v1
+      #   with:
+      #     scope: subscription
+      #     region: westeurope
+      #     subscriptionId: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'
+      #     template: ./iac/resourcegroup.bicep
+      #     parameters: 'resourceGroupName=rg_cleanarchitecture_dev location=westeurope'
 
-      - name: Deploy Azure Services
-        id: deploy_azure_services
-        uses: Azure/arm-deploy@v1
-        with:
-          resourceGroupName: rg_cleanarchitecture_dev
-          template: ./iac/main.bicep
-          parameters: "sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }} sqladminid=${{ secrets.AZURE_SQLADMINGROUP_ID }} sqladminname=\"${{ secrets.AZURE_SQLADMINGROUP_NAME }}\" communciationservicemailsenderroleid=${{ env.communciationservicemailsenderroleid }} sqlDomain=\"database.windows.net\""
+      # - name: Deploy Azure Services
+      #   id: deploy_azure_services
+      #   uses: Azure/arm-deploy@v1
+      #   with:
+      #     resourceGroupName: rg_cleanarchitecture_dev
+      #     template: ./iac/main.bicep
+      #     parameters: "sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }} sqladminid=${{ secrets.AZURE_SQLADMINGROUP_ID }} sqladminname=\"${{ secrets.AZURE_SQLADMINGROUP_NAME }}\" communciationservicemailsenderroleid=${{ env.communciationservicemailsenderroleid }} sqlDomain=\"database.windows.net\""
       
-      - name: Set Placeholders
-        uses: jacobtomlinson/gha-find-replace@v3
-        with:
-          find: '##placeholder_identity##'
-          replace: ${{ steps.deploy_azure_services.outputs.webAppIdentity }}
-          path: ./sql/roles.sql
+      # - name: Set Placeholders
+      #   uses: jacobtomlinson/gha-find-replace@v3
+      #   with:
+      #     find: '##placeholder_identity##'
+      #     replace: ${{ steps.deploy_azure_services.outputs.webAppIdentity }}
+      #     path: ./sql/roles.sql
 
-      - name: Add roles to sql db
-        uses: azure/sql-action@v2
-        with:
-          connection-string: '${{ steps.deploy_azure_services.outputs.sqlConnectionString }}'
-          path: ./sql/roles.sql
+      # - name: Add roles to sql db
+      #   uses: azure/sql-action@v2
+      #   with:
+      #     connection-string: '${{ steps.deploy_azure_services.outputs.sqlConnectionString }}'
+      #     path: ./sql/roles.sql
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
