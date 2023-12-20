@@ -4,7 +4,22 @@ param sku string = 'S1'
 param sqlpassword string
 param sqladminid string
 param sqladminname string
+param sqlDomain string
 param communciationservicemailsenderroleid string
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
+  name: 'law-cbn-dev'
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 90
+    workspaceCapping: {
+      dailyQuotaGb: 1
+    }
+  }
+}
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: 'appi-cbn-dev'
@@ -12,6 +27,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: 'web'
   properties: {
     Application_Type: 'web'    
+    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
 }
 
@@ -127,6 +143,9 @@ resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' 
     isLedgerOn: false
   }
 }
+
+output sqlConnectionString string = 'Server=tcp:${sqlServer.name}.${sqlDomain},1433;Initial Catalog=${sqlServerDatabase.name};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";'
+
 
 resource emailService 'Microsoft.Communication/emailServices@2023-06-01-preview' = {
   name: 'email-cbn-dev'
