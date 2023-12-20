@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,26 +20,34 @@ namespace CleanArchitecture.IntegrationTests.Documents
 {
 	public class DocumentControllerTests : IClassFixture<TestingWebAppFactory<Program>> 
 	{
-		private readonly HttpClient _client;
-		private readonly TestingWebAppFactory<Program> _appFactory;
+		//private readonly HttpClient _client;
+		private readonly TestingWebAppFactory<Program> _factory;
 
 		public DocumentControllerTests(TestingWebAppFactory<Program> factory)
 		{
-			_appFactory = factory;
-			_client = factory.CreateClient(new WebApplicationFactoryClientOptions
-			{
-				AllowAutoRedirect = false,
-			});
+			_factory = factory;
+			//_client = factory.CreateClient(new WebApplicationFactoryClientOptions
+			//{
+			//	AllowAutoRedirect = false,
+			//});
 		}
 
 		[Fact]
 		public async Task Index_WhenCalled_ShouldReturnSuccess()
 		{
+			var client = _factory.WithWebHostBuilder(builder =>
+			{
+				builder.ConfigureTestServices(services =>
+				{
+					services.AddScoped<ITestClaimsProvider, TestClaimsProvider>(provider => new TestClaimsProvider("Reader"));
+				});
+			}).CreateClient(new WebApplicationFactoryClientOptions
+			{
+				AllowAutoRedirect = false,
+			});
+			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
 
-
-			_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
-
-			var response = await _client.GetAsync("/Documents/Index");
+			var response = await client.GetAsync("/Documents/Index");
 
 			response.EnsureSuccessStatusCode();
 		}
@@ -46,7 +55,17 @@ namespace CleanArchitecture.IntegrationTests.Documents
 		[Fact]
 		public async Task Create_WhenCalled_ShouldReturnSuccess()
 		{
-			_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
+			var client = _factory.WithWebHostBuilder(builder =>
+			{
+				builder.ConfigureTestServices(services =>
+				{
+					services.AddScoped<ITestClaimsProvider, TestClaimsProvider>(provider => new TestClaimsProvider("Document.Creator"));
+				});
+			}).CreateClient(new WebApplicationFactoryClientOptions
+			{
+				AllowAutoRedirect = false,
+			});
+			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Scheme");
 
 			var model = new CreateDocumentViewModel
 			{
@@ -58,18 +77,11 @@ namespace CleanArchitecture.IntegrationTests.Documents
 			content.Add(new StringContent(model.Title), "Title");
 			content.Add(new StreamContent(file.OpenReadStream()), "postedFile", file.FileName);
 
-			var response = await _client.PostAsync("/Documents/Create", content);
+			var response = await client.PostAsync("/Documents/Create", content);
 
 			Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
 		}
-
-
-
 	}
-
-
-
-
 
 	public class TestingWebAppFactory<TEntryPoint> : WebApplicationFactory<Program>, IAsyncLifetime where TEntryPoint : Program
 	{
@@ -91,7 +103,7 @@ namespace CleanArchitecture.IntegrationTests.Documents
 		{
 			builder.ConfigureServices(services =>
 			{
-				services.AddScoped<ITestClaimsProvider, TestClaimsProvider>(provider => new TestClaimsProvider("Document.Creator"));
+				//services.AddScoped<ITestClaimsProvider, TestClaimsProvider>(provider => new TestClaimsProvider("Document.Creator"));
 				services.AddAuthentication("Scheme")
 					.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
 						"Scheme", options => { });
@@ -102,8 +114,7 @@ namespace CleanArchitecture.IntegrationTests.Documents
 				});
 
 				var descriptor = services.SingleOrDefault(
-					d => d.ServiceType ==
-						typeof(DbContextOptions<CleanArchitectureDbContext>));
+					d => d.ServiceType == typeof(DbContextOptions<CleanArchitectureDbContext>));
 				if (descriptor != null)
 					services.Remove(descriptor);
 				services.AddDbContext<CleanArchitectureDbContext>(options =>
@@ -114,18 +125,11 @@ namespace CleanArchitecture.IntegrationTests.Documents
 				using (var scope = sp.CreateScope())
 				using (var appContext = scope.ServiceProvider.GetRequiredService<CleanArchitectureDbContext>())
 				{
-					try
-					{
 						appContext.Database.EnsureCreated();
-					}
-					catch (Exception ex)
-					{
-						//Log errors or do anything you think it's needed
-						throw;
-					}
 				}
 			});
 		}
+
 		public async Task InitializeAsync()
 		{
 			await _msSqlContainer.StartAsync();
@@ -137,6 +141,5 @@ namespace CleanArchitecture.IntegrationTests.Documents
 			await _msSqlContainer.StopAsync();
 			await _azuriteContainer.StopAsync();
 		}
-
 	}
 }
