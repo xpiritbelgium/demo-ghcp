@@ -13,6 +13,7 @@ env:
 
 jobs:
   Build:
+    environment: DEV
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
