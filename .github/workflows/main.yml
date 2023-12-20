@@ -37,8 +37,7 @@ jobs:
         working-directory: ./src
 
       - name: Publish
-        run: dotnet publish CleanArchitecture.UI.Web/CleanArchitecture.UI.Web.csproj -c Release -o website
-        working-directory: ./src
+        run: dotnet publish ./src/CleanArchitecture.UI.Web/CleanArchitecture.UI.Web.csproj -c Release -o website
 
       - name: Azure Login
         uses: Azure/login@v1
