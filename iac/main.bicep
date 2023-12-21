@@ -114,6 +114,16 @@ resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' ={
   }
 }
 
+resource roleAssignment_sqlserverdirectoryreader 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+  scope: tenant()
+  name: guid(sqlServer.id, '88d8e3e3-8f55-4a1e-953a-9b9898b8876b', '${environment_lower}')
+  properties:{
+    roleDefinitionId: tenantResourceId('Microsoft.Authorization/roleDefinitions', '88d8e3e3-8f55-4a1e-953a-9b9898b8876b')
+    principalId: sqlServer.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 // resource sqlServerAdministrator 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
 //   name: 'ActiveDirectory'
 //   parent: sqlServer
