@@ -3,8 +3,8 @@ param sku string = 'S1'
 param environment string = 'dev'
 @secure()
 param sqlpassword string
-param sqladminid string
-param sqladminname string
+// param sqladminid string
+// param sqladminname string
 param sqlDomain string
 param communciationservicemailsenderroleid string
 
@@ -114,16 +114,16 @@ resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' ={
   }
 }
 
-resource sqlServerAdministrator 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
-  name: 'ActiveDirectory'
-  parent: sqlServer
-  properties: {
-    administratorType: 'ActiveDirectory'
-    login: sqladminname
-    sid: sqladminid
-    tenantId: tenant().tenantId
-  }
-}
+// resource sqlServerAdministrator 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
+//   name: 'ActiveDirectory'
+//   parent: sqlServer
+//   properties: {
+//     administratorType: 'ActiveDirectory'
+//     login: sqladminname
+//     sid: sqladminid
+//     tenantId: tenant().tenantId
+//   }
+// }
 
 resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
   parent: sqlServer
