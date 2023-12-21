@@ -31,7 +31,7 @@ jobs:
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
     - name: Create EF Migration script
       run: |
-        dotnet tool install dotnet-ef --version 6
+        dotnet tool restore
         dotnet ef migrations script --project src/CleanArchitecture.Persistence --startup-project src/CleanArchitecture.UI.Web --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Scripts/EFMigrations.sql --idempotent
     - name: Publish Artifacts
       uses: actions/upload-artifact@v3
