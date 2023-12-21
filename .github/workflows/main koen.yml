@@ -41,7 +41,7 @@ jobs:
         with:
           resourceGroupName: rg_cleanarchitecture_dev
           template: ./iac/main.bicep
-          parameters: "sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }} sqladminid=${{ secrets.AZURE_SQLADMINGROUP_ID }} sqladminname=\"${{ secrets.AZURE_SQLADMINGROUP_NAME }}\" communciationservicemailsenderroleid=${{ env.communciationservicemailsenderroleid }} sqlDomain=\"database.windows.net\""
+          parameters: "sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }} environment=\"KOENDEV\" sqladminid=${{ secrets.AZURE_SQLADMINGROUP_ID }} sqladminname=\"${{ secrets.AZURE_SQLADMINGROUP_NAME }}\" communciationservicemailsenderroleid=${{ env.communciationservicemailsenderroleid }} sqlDomain=\"database.windows.net\""
       
       - name: Set Placeholders
         uses: jacobtomlinson/gha-find-replace@v3
