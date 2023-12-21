@@ -31,6 +31,43 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' ={
+  name: 'managed-identity'
+  location: location
+}
+output identity string = managedIdentity.id
+// TODO: Assign correct permissios 
+
+resource createAzureADApplicationScript  'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'createAzureEntraApplication'
+  location: location
+  kind:'AzureCLI'
+  identity:{
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}':{}
+    }
+  }
+  properties: {
+    azCliVersion: '2.55.0'
+    retentionInterval: 'P1D'
+    timeout: 'PT30M'
+    cleanupPreference: 'OnSuccess'
+    environmentVariables: [
+      {
+        name: 'AzureADApplicationName'
+        value: 'cbn-dev'
+      }
+    ]
+    scriptContent: loadTextContent('adscript.sh')
+  }
+}
+output objectId string = createAzureADApplicationScript.properties.outputs.applicationObjectId
+output clientId string = createAzureADApplicationScript.properties.outputs.applicationClientId
+output servicePrincipalObjectId string = createAzureADApplicationScript.properties.outputs.servicePrincipalObjectId
+// TODO: check if we don't expose secrets!!!
+output clientsecret string = createAzureADApplicationScript.properties.outputs.secret
+
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: 'asp-cbn-dev'
   location: location
@@ -65,6 +102,21 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
 }
 
 output webAppIdentity string = webApp.name
+
+// TODO: fine tune settings
+resource authsettings 'Microsoft.Web/sites/config@2023-01-01' = {
+  name: 'authsettings'
+  parent: webApp
+  properties: {
+    enabled: true
+    defaultProvider: 'AzureActiveDirectory'
+    issuer: 'https://sts.windows.net/${subscription().tenantId}/'
+    clientId: createAzureADApplicationScript.properties.outputs.clientid
+    clientSecret: createAzureADApplicationScript.properties.outputs.clientsecret
+    clientSecretSettingName: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+    unauthenticatedClientAction: 'RedirectToLoginPage'
+  }
+}
 
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: 'stcbndev'

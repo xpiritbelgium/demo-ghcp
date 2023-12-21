@@ -1,0 +1,47 @@
+[
+    {
+        "allowedMemberTypes": [
+            "User"
+        ],
+        "description": "admin role for the application",
+        "displayName": "Administrators",
+        "isEnabled": true,
+        "value": "Admin"
+    },
+    {
+        "allowedMemberTypes": [
+            "User"
+        ],
+        "description": "Can create and submit documents",
+        "displayName": "Document Creator",
+        "isEnabled": true,
+        "value": "Document.Creator"
+    },
+    {
+        "allowedMemberTypes": [
+            "User"
+        ],
+        "description": "Can crosscheck submitted documents",
+        "displayName": "Document Crosschecker",
+        "isEnabled": true,
+        "value": "Document.Crosschecker"
+    },
+    {
+        "allowedMemberTypes": [
+            "User"
+        ],
+        "description": "Can approve documents and release them for publication",
+        "displayName": "Document Approver",
+        "isEnabled": true,
+        "value": "Document.Approver"
+    },
+    {
+        "allowedMemberTypes": [
+            "User"
+        ],
+        "description": "Gives read access to the application",
+        "displayName": "Reader",
+        "isEnabled": true,
+        "value": "Reader"
+    }
+]
