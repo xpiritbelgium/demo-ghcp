@@ -1,5 +1,6 @@
 param location string = resourceGroup().location
 param sku string = 'S1'
+param environment string = 'dev'
 @secure()
 param sqlpassword string
 param sqladminid string
@@ -8,7 +9,7 @@ param sqlDomain string
 param communciationservicemailsenderroleid string
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
-  name: 'law-cbn-dev'
+  name: 'law-cbn-${environment}'
   location: location
   properties: {
     sku: {
@@ -22,7 +23,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12
 }
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'appi-cbn-dev'
+  name: 'appi-cbn-${environment}'
   location: location
   kind: 'web'
   properties: {
@@ -32,7 +33,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
-  name: 'asp-cbn-dev'
+  name: 'asp-cbn-${environment}'
   location: location
   properties: {
     reserved: true
@@ -44,7 +45,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
 }
 
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
-  name: 'app-cbn-dev'
+  name: 'app-cbn-${environment}'
   location: location
   properties: {
     serverFarmId: appServicePlan.id
@@ -67,7 +68,7 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
 output webAppIdentity string = webApp.name
 
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
-  name: 'stcbndev'
+  name: 'stcbn${environment}'
   location: location
   kind: 'StorageV2'
   sku: {
@@ -77,7 +78,7 @@ resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
 
 resource roleAssignment_storageaccountcontributor 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
   scope: storageaccount
-  name: guid(storageaccount.id, '17d1049b-9a84-46fb-8f53-869881c3d3ab', 'dev')
+  name: guid(storageaccount.id, '17d1049b-9a84-46fb-8f53-869881c3d3ab', '${environment}')
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')
     principalId: webApp.identity.principalId
@@ -87,7 +88,7 @@ resource roleAssignment_storageaccountcontributor 'Microsoft.Authorization/roleA
 
 resource roleAssignment_storageblobdatacontributor 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
   scope: storageaccount
-  name: guid(storageaccount.id, 'ba92f5b4-2d11-453d-a403-e96b0029c9fe', 'dev')
+  name: guid(storageaccount.id, 'ba92f5b4-2d11-453d-a403-e96b0029c9fe', '${environment}')
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')
     principalId: webApp.identity.principalId
@@ -96,7 +97,7 @@ resource roleAssignment_storageblobdatacontributor 'Microsoft.Authorization/role
 }
 
 resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' ={
-  name: 'sql-cbn-dev'
+  name: 'sql-cbn-${environment}'
   location: location
   properties: {
     administratorLogin: 'sqladmin'
@@ -124,7 +125,7 @@ resource sqlServerAdministrator 'Microsoft.Sql/servers/administrators@2022-05-01
 
 resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
   parent: sqlServer
-  name: 'sqldb-cbn-dev'
+  name: 'sqldb-cbn-${environment}'
   location: location
   sku: {
     name: 'GP_S_Gen5'
@@ -148,7 +149,7 @@ output sqlConnectionString string = 'Server=tcp:${sqlServer.name}.${sqlDomain},1
 
 
 resource emailService 'Microsoft.Communication/emailServices@2023-06-01-preview' = {
-  name: 'email-cbn-dev'
+  name: 'email-cbn-${environment}'
   location: 'global'
   properties: {
     dataLocation: 'Europe'
@@ -177,7 +178,7 @@ resource senderUserNameAzureDomain 'Microsoft.Communication/emailServices/domain
 output sendermail string = '${senderUserNameAzureDomain.properties.username}@${emailServiceAzureDomain.properties.fromSenderDomain}'
 
 resource communicationService 'Microsoft.Communication/communicationServices@2023-06-01-preview' = {
-  name: 'acs-cbn-dev'
+  name: 'acs-cbn-${environment}'
   location: 'global'
   properties: {
     dataLocation: 'Europe'
@@ -189,7 +190,7 @@ resource communicationService 'Microsoft.Communication/communicationServices@202
 
 resource roleAssignment_communicationservicemailsender 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
   scope: communicationService
-  name: guid(storageaccount.id, communciationservicemailsenderroleid, 'dev')
+  name: guid(storageaccount.id, communciationservicemailsenderroleid, '${environment}')
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', communciationservicemailsenderroleid)
     principalId: webApp.identity.principalId
