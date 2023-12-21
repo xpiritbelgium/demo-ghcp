@@ -41,6 +41,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
 output identity string = managedIdentity.id
 // TODO: Assign correct permissios 
 
+// based on https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.resources/deployment-script-azcli-graph-azure-ad
 resource createAzureADApplicationScript  'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'createAzureEntraApplication'
   location: location
