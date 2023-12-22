@@ -41,6 +41,17 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
 output identity string = managedIdentity.id
 // TODO: Assign correct permissios 
 
+var roledefenitionResourceId = '9b895d92-2cd3-44c7-9d02-a6ac2d5ea5c3'
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01'= {
+  name: guid(subscription().id,managedIdentity.id,roledefenitionResourceId)
+  properties:  {
+    roleDefinitionId: roledefenitionResourceId
+    principalId: managedIdentity.id
+    principalType:'ServicePrincipal'
+  }
+
+}
+
 // based on https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.resources/deployment-script-azcli-graph-azure-ad
 resource createAzureADApplicationScript  'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'createAzureEntraApplication'
