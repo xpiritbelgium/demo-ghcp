@@ -11,7 +11,6 @@ using Microsoft.Identity.Web.UI;
 using System.IdentityModel.Tokens.Jwt;
 using CleanArchitecture.Application.Extensions;
 using CleanArchitecture.UI.Web.BackgroundTask;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.UI.Web
 {

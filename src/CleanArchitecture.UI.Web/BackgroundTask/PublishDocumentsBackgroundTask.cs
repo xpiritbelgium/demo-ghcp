@@ -1,7 +1,6 @@
 ﻿
 using CleanArchitecture.Application.Documents;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.UI.Web.BackgroundTask
 {
@@ -13,12 +12,6 @@ namespace CleanArchitecture.UI.Web.BackgroundTask
         private readonly IMediator _mediator;
 
         private Timer? _timer = null;
-
-        //public PublishDocumentsBackgroundTask(ILogger<PublishDocumentsBackgroundTask> logger, IMediator mediator)
-        //{
-        //    _logger = logger;
-        //    _mediator = mediator;
-        //}
 
         public PublishDocumentsBackgroundTask(ILogger<PublishDocumentsBackgroundTask> logger, IServiceScopeFactory serviceScopeFactory)
         {
