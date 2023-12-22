@@ -61,6 +61,10 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
           value: appInsights.properties.ConnectionString
         }
         {
+          name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
+          value: '~2'
+        }        
+        {
           name: 'Blobs__ServiceUri'
           value: 'https://${storageaccount.name}.${storageDomain}/'
         }
