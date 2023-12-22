@@ -16,5 +16,5 @@ outputJson=$(jq --null-input \
   --arg applicationClientId "$applicationClientId" \
   --arg servicePrincipalObjectId "$servicePrincipalObjectId" \
   --arg clientSecret "$secretPassword" \
-  '{"applicationObjectId": $applicationObjectId, "applicationClientId": $applicationClientId, "servicePrincipalObjectId": $servicePrincipalObjectId, "secret": $clientSecret}')
+  '{"applicationObjectId": $applicationObjectId, "applicationClientId": $applicationClientId, "servicePrincipalObjectId": $servicePrincipalObjectId, "appClientSecret": $clientSecret}')
 echo $outputJson > $AZ_SCRIPTS_OUTPUT_PATH

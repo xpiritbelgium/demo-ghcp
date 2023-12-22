@@ -77,11 +77,11 @@ resource createAzureADApplicationScript  'Microsoft.Resources/deploymentScripts@
     scriptContent: loadTextContent('adscript.sh')
   }
 }
-output objectId string = createAzureADApplicationScript.properties.outputs.applicationObjectId
-output clientId string = createAzureADApplicationScript.properties.outputs.applicationClientId
-output servicePrincipalObjectId string = createAzureADApplicationScript.properties.outputs.servicePrincipalObjectId
-// TODO: check if we don't expose secrets!!!
-output clientsecret string = createAzureADApplicationScript.properties.outputs.secret
+// output objectId string = createAzureADApplicationScript.properties.outputs.applicationObjectId
+// output clientId string = createAzureADApplicationScript.properties.outputs.applicationClientId
+// output servicePrincipalObjectId string = createAzureADApplicationScript.properties.outputs.servicePrincipalObjectId
+// // TODO: check if we don't expose secrets!!!
+// output clientsecret string = createAzureADApplicationScript.properties.outputs.secret
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: 'asp-cbn-${environment_lower}'
@@ -126,8 +126,8 @@ resource authsettings 'Microsoft.Web/sites/config@2022-09-01' = {
     enabled: true
     defaultProvider: 'AzureActiveDirectory'
     issuer: 'https://sts.windows.net/${subscription().tenantId}/'
-    clientId: createAzureADApplicationScript.properties.outputs.clientid
-    clientSecret: createAzureADApplicationScript.properties.outputs.clientsecret
+    clientId: createAzureADApplicationScript.properties.outputs.applicationClientId
+    clientSecret: createAzureADApplicationScript.properties.outputs.appClientSecret
     clientSecretSettingName: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
     unauthenticatedClientAction: 'RedirectToLoginPage'
   }
