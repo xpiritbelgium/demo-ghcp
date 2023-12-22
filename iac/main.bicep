@@ -6,6 +6,7 @@ param sqlpassword string
 // param sqladminid string
 // param sqladminname string
 param sqlDomain string
+param storageDomain string
 param communciationservicemailsenderroleid string
 
 var environment_lower = toLower(environment)
@@ -58,6 +59,25 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
         {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
           value: appInsights.properties.ConnectionString
+        }
+        {
+          name: 'Blobs__ServiceUri'
+          value: 'https://${storageaccount.name}.storageDomain/'
+        }
+        {
+          name: 'Email__Endpoint'
+          value: communicationService.properties.hostName
+        }
+        {
+          name: 'Email__Sender'
+          value: '${senderUserNameAzureDomain.properties.username}@${emailServiceAzureDomain.properties.fromSenderDomain}'
+        }
+      ]
+      connectionStrings: [
+        {
+          name: 'CleanArchitectureConnectionsString'
+          connectionString: 'Server=tcp:${sqlServer.name}.${sqlDomain},1433;Initial Catalog=${sqlServerDatabase.name};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";'
+          type: 'SQLAzure'
         }
       ]
     }
