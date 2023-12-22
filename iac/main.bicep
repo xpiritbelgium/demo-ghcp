@@ -76,6 +76,32 @@ resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   sku: {
     name: 'Standard_ZRS'
   }
+  properties:{
+    allowBlobPublicAccess: true
+  }
+}
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2019-06-01' = {
+  name: 'default'
+  parent: storageaccount
+}
+
+resource blobContainerinternal 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+  name: 'sa-mgdid-test'
+  parent: blobService
+  properties: {
+    publicAccess: 'None'
+    metadata: {}
+  }
+}
+
+resource blobContainerexternal 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+  name: 'sa-mgdid-published-test'
+  parent: blobService
+  properties: {
+    publicAccess: 'None'
+    metadata: {}
+  }
 }
 
 resource roleAssignment_storageaccountcontributor 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
