@@ -54,7 +54,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: '##placeholder_githubprincipal##'
-          replace: ${{ github.actor }}
+          replace: '${{ secrets.GH_PRINCIPALNAME }}'
           path: ./sql/roles.sql
 
       - name: Add roles to sql db
