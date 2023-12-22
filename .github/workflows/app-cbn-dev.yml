@@ -1,14 +1,17 @@
 name: Build and deploy .NET Core application to Web App app-cbn-dev
-on:
-  push:
-    branches:
-    - main
+on: workflow_dispatch
+  # push:
+  #   branches:
+  #   - main
+permissions:
+  id-token: write
+  contents: read
 env:
   AZURE_WEBAPP_NAME: app-cbn-dev
   AZURE_WEBAPP_PACKAGE_PATH: CleanArchitecture.UI.Web/published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: CleanArchitecture.UI.Web
+  WORKING_DIRECTORY: src/CleanArchitecture.UI.Web
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,23 +29,39 @@ jobs:
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+    - name: Create EF Migration script
+      run: |
+        dotnet tool restore
+        dotnet ef migrations script --project src/CleanArchitecture.Persistence --startup-project src/CleanArchitecture.UI.Web --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Scripts/EFMigrations.sql --idempotent
     - name: Publish Artifacts
       uses: actions/upload-artifact@v3
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
   deploy:
+    environment: DEV
     runs-on: ubuntu-latest
-    needs: build
+    needs: build    
     steps:
     - name: Download artifact from build job
       uses: actions/download-artifact@v3
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Azure Login
+      uses: Azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - name: EF migration
+      uses: azure/sql-action@v2
+      with:
+        connection-string: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/Scripts/EFMigrations.sql
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.app_cbn_dev_B1FC }}
+        #publish-profile: ${{ secrets.app_cbn_dev_B1FC }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

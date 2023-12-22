@@ -18,14 +18,13 @@ SP_PRINCIPPALNAME=GITHUBACTIONS_$GH_ENVIRONMENT
  
 #create the service principal
 SP_APPID=$(az ad sp create-for-rbac --name $SP_PRINCIPPALNAME --role Contributor --scopes /subscriptions/$SP_SUBSCRIPTIONID --query appId --output tsv)
- 
+SP_OBJECTID=$(az ad sp list --filter "appId eq '$SP_APPID'" --query '[].id' -o tsv)
+
 #get the objectid of the service principal, needed for the creation of the federated credential
-SP_OBJECTID=$(az ad app show --id $SP_APPID --query id --output tsv)
+SP_APPOBJECTID=$(az ad app show --id $SP_APPID --query id --output tsv)
  
 #create the federated credential
-az ad app federated-credential create --id $SP_OBJECTID --parameters "{\"name\":\"GH$GH_ENVIRONMENT\",\"issuer\":\"
-https://token.actions.githubusercontent.com\",\"subject\":\"repo:$GH_ORGANIZATION/$GH_REPOSITORY:environment:$GH_ENVIRONMENT\",\"description\":\"credential
-for $GH_ENVIRONMENT deployment\",\"audiences\":[\"api://AzureADTokenExchange\"]}"
+az ad app federated-credential create --id $SP_APPOBJECTID --parameters "{\"name\":\"GH$GH_ENVIRONMENT\",\"issuer\":\"https://token.actions.githubusercontent.com\",\"subject\":\"repo:$GH_ORGANIZATION/$GH_REPOSITORY:environment:$GH_ENVIRONMENT\",\"description\":\"credential for $GH_ENVIRONMENT deployment\",\"audiences\":[\"api://AzureADTokenExchange\"]}"
 
 #create role assignment for role based access control admin
 az role assignment create --role "Role Based Access Control Administrator" --scope /subscriptions/$SP_SUBSCRIPTIONID --assignee-object-id $SP_OBJECTID --assignee-principal-type ServicePrincipal --description "Role assignment to allow GH Actions to do role assignments of service principals"
@@ -38,11 +37,19 @@ SP_SQLADMINGROUP_ID=$(az ad group create --display-name "$SP_SQLADMINGROUP_NAME"
 az ad group member add --group "cbn sql admins" --member-id $SP_OBJECTID
 
 #create custom role communcation service mail sender
-az role definition create --role-definition "{\"Name\": \"Communication Service Mail Sender CBN\", \"IsCustom\": true, \"Description\": \"Minimal set of permissions required to send mail with Azure Communication Service.\", \"Actions\":[\"Microsoft.Communication/CommunicationServices/Read\",\"Microsoft.Communication/CommunicationServices/Write\",\"Microsoft.Communication/EmailServices/read\"],\"NotActions\": [], \"AssignableScopes\": [\"/subscriptions/$SP_SUBSCRIPTIONID\"]}"
+AD_MAILSENDERROLEID= $(az role definition create --role-definition "{\"Name\": \"Communication Service Mail Sender CBN\", \"IsCustom\": true, \"Description\": \"Minimal set of permissions required to send mail with Azure Communication Service.\", \"Actions\":[\"Microsoft.Communication/CommunicationServices/Read\",\"Microsoft.Communication/CommunicationServices/Write\",\"Microsoft.Communication/EmailServices/read\"],\"NotActions\": [], \"AssignableScopes\": [\"/subscriptions/$SP_SUBSCRIPTIONID\"]}" --query name --output tsv)
  
 #print the values needed to add as secrets into github
-printf "AZURE_CLIENT_ID: $SP_APPID\nAZURE_TENANT_ID: $SP_TENANTID\nAZURE_SUBSCRIPTION_ID: $SP_SUBSCRIPTIONID\nSP_SQLADMINGROUP_NAME: $SP_SQLADMINGROUP_NAME\nSP_SQLADMINGROUP_ID: $SP_SQLADMINGROUP_ID\n"
+printf "AZURE_CLIENT_ID: $SP_APPID\nAZURE_TENANT_ID: $SP_TENANTID\nAZURE_SUBSCRIPTION_ID: $SP_SUBSCRIPTIONID\nSP_SQLADMINGROUP_NAME: $SP_SQLADMINGROUP_NAME\nSP_SQLADMINGROUP_ID: $SP_SQLADMINGROUP_ID\nAD_MAILSENDERROLEID: $AD_MAILSENDERROLEID\n"
 ```
+
+## Add the github actions service principal to the Privileged Role Administrator
+This is needed so that the Directory Reader role can be assigned to the SQL Server Idenity through the Bicep code
+1. Log in into the Azure portal
+1. Go to Entra ID -> Roles and administrators
+1. Search for "Privileged Role Administrator"
+1. Add the Github user
+
 
 ## Creating the AZURE_CREDENTIALS secret in Github
 1. Go to your repo in GitHub

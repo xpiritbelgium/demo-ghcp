@@ -1,4 +1,4 @@
-name: Deploy Infra and App
+name: Deploy Infra and App Koen Environment
 on: workflow_dispatch
   # push:
   #   branches:
@@ -13,7 +13,7 @@ env:
 
 jobs:
   IAC:
-    environment: DEV
+    environment: KOENDEV
     name: Provision Infrastructure
     runs-on: ubuntu-latest
     steps:
@@ -41,13 +41,20 @@ jobs:
         with:
           resourceGroupName: rg_cleanarchitecture_dev
           template: ./iac/main.bicep
-          parameters: "sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }} sqladminid=${{ secrets.AZURE_SQLADMINGROUP_ID }} sqladminname=\"${{ secrets.AZURE_SQLADMINGROUP_NAME }}\" communciationservicemailsenderroleid=${{ env.communciationservicemailsenderroleid }} sqlDomain=\"database.windows.net\""
+          parameters: "sku=S1 location=westeurope sqlpassword=${{ secrets.AZURE_SQL_PASSWORD }} environment=\"KOENDEV\" communciationservicemailsenderroleid=${{ env.communciationservicemailsenderroleid }} sqlDomain=\"database.windows.net\""
       
-      - name: Set Placeholders
+      - name: Replace webapp identity in sql script
         uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: '##placeholder_identity##'
           replace: ${{ steps.deploy_azure_services.outputs.webAppIdentity }}
+          path: ./sql/roles.sql
+
+      - name: Set Placeholders
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: '##placeholder_githubprincipal##'
+          replace: ${{ github.actor }}
           path: ./sql/roles.sql
 
       - name: Add roles to sql db
