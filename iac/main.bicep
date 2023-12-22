@@ -3,9 +3,10 @@ param sku string = 'S1'
 param environment string = 'dev'
 @secure()
 param sqlpassword string
-param sqladminid string
-param sqladminname string
+// param sqladminid string
+// param sqladminname string
 param sqlDomain string
+param storageDomain string
 param communciationservicemailsenderroleid string
 
 var environment_lower = toLower(environment)
@@ -108,6 +109,29 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
           name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
           value: appInsights.properties.ConnectionString
         }
+        {
+          name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
+          value: '~2'
+        }        
+        {
+          name: 'Blobs__ServiceUri'
+          value: 'https://${storageaccount.name}.${storageDomain}/'
+        }
+        {
+          name: 'Email__Endpoint'
+          value: communicationService.properties.hostName
+        }
+        {
+          name: 'Email__Sender'
+          value: '${senderUserNameAzureDomain.properties.username}@${emailServiceAzureDomain.properties.fromSenderDomain}'
+        }
+      ]
+      connectionStrings: [
+        {
+          name: 'CleanArchitectureConnectionsString'
+          connectionString: 'Server=tcp:${sqlServer.name}.${sqlDomain},1433;Initial Catalog=${sqlServerDatabase.name};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";'
+          type: 'SQLAzure'
+        }
       ]
     }
   }
@@ -139,6 +163,32 @@ resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   kind: 'StorageV2'
   sku: {
     name: 'Standard_ZRS'
+  }
+  properties:{
+    allowBlobPublicAccess: true
+  }
+}
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2019-06-01' = {
+  name: 'default'
+  parent: storageaccount
+}
+
+resource blobContainerinternal 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+  name: 'sa-mgdid-test'
+  parent: blobService
+  properties: {
+    publicAccess: 'None'
+    metadata: {}
+  }
+}
+
+resource blobContainerexternal 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = {
+  name: 'sa-mgdid-published-test'
+  parent: blobService
+  properties: {
+    publicAccess: 'Blob'
+    metadata: {}
   }
 }
 
@@ -178,16 +228,26 @@ resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' ={
   }
 }
 
-resource sqlServerAdministrator 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
-  name: 'ActiveDirectory'
-  parent: sqlServer
-  properties: {
-    administratorType: 'ActiveDirectory'
-    login: sqladminname
-    sid: sqladminid
-    tenantId: tenant().tenantId
-  }
-}
+// resource roleAssignment_sqlserverdirectoryreader 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+//   scope: tenant()
+//   name: guid(sqlServer.id, '88d8e3e3-8f55-4a1e-953a-9b9898b8876b', '${environment_lower}')
+//   properties:{
+//     roleDefinitionId: tenantResourceId('Microsoft.Authorization/roleDefinitions', '88d8e3e3-8f55-4a1e-953a-9b9898b8876b')
+//     principalId: sqlServer.identity.principalId
+//     principalType: 'ServicePrincipal'
+//   }
+// }
+
+// resource sqlServerAdministrator 'Microsoft.Sql/servers/administrators@2022-05-01-preview' = {
+//   name: 'ActiveDirectory'
+//   parent: sqlServer
+//   properties: {
+//     administratorType: 'ActiveDirectory'
+//     login: sqladminname
+//     sid: sqladminid
+//     tenantId: tenant().tenantId
+//   }
+// }
 
 resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
   parent: sqlServer
