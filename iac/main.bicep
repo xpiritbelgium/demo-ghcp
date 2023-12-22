@@ -34,13 +34,14 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+// To be able to run a deployemnt script in bicep, you need a user assigned managed identity
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' ={
   name: 'managed-identity'
   location: location
 }
 output identity string = managedIdentity.id
-// TODO: Assign correct permissios 
 
+// The user assigned identity needs to have the 
 var roledefenitionResourceId = '9b895d92-2cd3-44c7-9d02-a6ac2d5ea5c3'
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01'= {
   name: guid(subscription().id,managedIdentity.id,roledefenitionResourceId)
@@ -49,7 +50,6 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01'= {
     principalId: managedIdentity.id
     principalType:'ServicePrincipal'
   }
-
 }
 
 // based on https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.resources/deployment-script-azcli-graph-azure-ad
