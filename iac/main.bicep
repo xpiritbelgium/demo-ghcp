@@ -99,7 +99,7 @@ resource blobContainerexternal 'Microsoft.Storage/storageAccounts/blobServices/c
   name: 'sa-mgdid-published-test'
   parent: blobService
   properties: {
-    publicAccess: 'None'
+    publicAccess: 'Blob'
     metadata: {}
   }
 }
