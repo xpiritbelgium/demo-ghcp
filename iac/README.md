@@ -43,6 +43,14 @@ AD_MAILSENDERROLEID= $(az role definition create --role-definition "{\"Name\": \
 printf "AZURE_CLIENT_ID: $SP_APPID\nAZURE_TENANT_ID: $SP_TENANTID\nAZURE_SUBSCRIPTION_ID: $SP_SUBSCRIPTIONID\nSP_SQLADMINGROUP_NAME: $SP_SQLADMINGROUP_NAME\nSP_SQLADMINGROUP_ID: $SP_SQLADMINGROUP_ID\nAD_MAILSENDERROLEID: $AD_MAILSENDERROLEID\n"
 ```
 
+## Add the github actions service principal to the Privileged Role Administrator
+This is needed so that the Directory Reader role can be assigned to the SQL Server Idenity through the Bicep code
+1. Log in into the Azure portal
+1. Go to Entra ID -> Roles and administrators
+1. Search for "Privileged Role Administrator"
+1. Add the Github user
+
+
 ## Creating the AZURE_CREDENTIALS secret in Github
 1. Go to your repo in GitHub
 1. Click on Environments and create a new environment called "DEV"
