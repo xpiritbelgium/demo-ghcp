@@ -64,7 +64,7 @@ resource createAzureADApplicationScript  'Microsoft.Resources/deploymentScripts@
     }
   }
   properties: {
-    azCliVersion: '2.55.0'
+    azCliVersion: '2.54.0'
     retentionInterval: 'P1D'
     timeout: 'PT30M'
     cleanupPreference: 'OnSuccess'
@@ -119,7 +119,7 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
 output webAppIdentity string = webApp.name
 
 // TODO: fine tune settings
-resource authsettings 'Microsoft.Web/sites/config@2023-01-01' = {
+resource authsettings 'Microsoft.Web/sites/config@2022-09-01' = {
   name: 'authsettings'
   parent: webApp
   properties: {
