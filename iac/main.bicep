@@ -62,7 +62,7 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
         }
         {
           name: 'Blobs__ServiceUri'
-          value: 'https://${storageaccount.name}.storageDomain/'
+          value: 'https://${storageaccount.name}.${storageDomain}/'
         }
         {
           name: 'Email__Endpoint'
