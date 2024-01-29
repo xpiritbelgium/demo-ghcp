@@ -35,6 +35,55 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+// To be able to run a deployemnt script in bicep, you need a user assigned managed identity
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' ={
+  name: 'managed-identity'
+  location: location
+}
+output identity string = managedIdentity.id
+
+// The user assigned identity needs to have the 
+var roledefenitionResourceId = '9b895d92-2cd3-44c7-9d02-a6ac2d5ea5c3'
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01'= {
+  name: guid(subscription().id,managedIdentity.id,roledefenitionResourceId)
+  properties:  {
+    roleDefinitionId: roledefenitionResourceId
+    principalId: managedIdentity.id
+    principalType:'ServicePrincipal'
+  }
+}
+
+// based on https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.resources/deployment-script-azcli-graph-azure-ad
+resource createAzureADApplicationScript  'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'createAzureEntraApplication'
+  location: location
+  kind:'AzureCLI'
+  identity:{
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}':{}
+    }
+  }
+  properties: {
+    azCliVersion: '2.54.0'
+    retentionInterval: 'P1D'
+    timeout: 'PT30M'
+    cleanupPreference: 'OnSuccess'
+    environmentVariables: [
+      {
+        name: 'AzureADApplicationName'
+        value: 'cbn-dev'
+      }
+    ]
+    scriptContent: loadTextContent('adscript.sh')
+  }
+}
+// output objectId string = createAzureADApplicationScript.properties.outputs.applicationObjectId
+// output clientId string = createAzureADApplicationScript.properties.outputs.applicationClientId
+// output servicePrincipalObjectId string = createAzureADApplicationScript.properties.outputs.servicePrincipalObjectId
+// // TODO: check if we don't expose secrets!!!
+// output clientsecret string = createAzureADApplicationScript.properties.outputs.secret
+
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: 'asp-cbn-${environment_lower}'
   location: location
@@ -92,6 +141,21 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
 }
 
 output webAppIdentity string = webApp.name
+
+// TODO: fine tune settings
+resource authsettings 'Microsoft.Web/sites/config@2022-09-01' = {
+  name: 'authsettings'
+  parent: webApp
+  properties: {
+    enabled: true
+    defaultProvider: 'AzureActiveDirectory'
+    issuer: 'https://sts.windows.net/${subscription().tenantId}/'
+    clientId: createAzureADApplicationScript.properties.outputs.applicationClientId
+    clientSecret: createAzureADApplicationScript.properties.outputs.appClientSecret
+    clientSecretSettingName: 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+    unauthenticatedClientAction: 'RedirectToLoginPage'
+  }
+}
 
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: 'stcbn${environment_lower}'
