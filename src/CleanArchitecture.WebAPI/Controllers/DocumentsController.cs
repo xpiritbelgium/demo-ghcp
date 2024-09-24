@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.WebAPI.Controllers
 {
+    /// <summary>
+    /// Controller for managing documents.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class DocumentsController : ControllerBase
@@ -14,13 +17,18 @@ namespace CleanArchitecture.WebAPI.Controllers
         private readonly ILogger<DocumentsController> _logger;
         private readonly IMediator _mediator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DocumentsController"/> class.
+        /// </summary>
+        /// <param name="logger">The logger instance.</param>
+        /// <param name="mediator">The mediator instance.</param>
         public DocumentsController(ILogger<DocumentsController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
         }
 
-        // GET: api/<DocumentsController>
+        
         [HttpGet]
         public async Task<IEnumerable<DocumentModel>> Get()
         {
@@ -31,15 +39,27 @@ namespace CleanArchitecture.WebAPI.Controllers
             return documents;
         }
 
-        // GET api/<DocumentsController>/5
+        
+        /// <summary>
+        /// Get a document by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the document.</param>
+        /// <returns>The document.</returns>
         [HttpGet("{id}")]
-        public async Task<DocumentModel> Get(Guid id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<DocumentModel>> Get(Guid id)
         {
             var result = await _mediator.Send(new GetPublishedDocumentQuery(id));
-
+        
+            if (result == null)
+            {
+                return NotFound();
+            }
+        
             var document = new DocumentModel(result);
-
-            return document;
+        
+            return Ok(document);
         }
     }
 }

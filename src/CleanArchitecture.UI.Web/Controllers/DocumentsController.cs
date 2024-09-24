@@ -51,7 +51,7 @@ namespace CleanArchitecture.UI.Web.Controllers
             return View(document);
         }
 
-        public async Task<IActionResult> Edit(Guid id)
+        public Task<IActionResult> Edit(Guid id)
         {
             throw new NotImplementedException();
         }
